@@ -8,11 +8,11 @@ struct Todo{
     completed : bool
 }
 
-  
+
 fn getinput(prompt : &str) -> Option<String> {
     println!("{}", prompt);
     let mut input = String :: new();
-    stdin().read_line(&mut input).ok();
+    stdin().read_line(&mut input).expect("cant read");
     return Some(input.trim().to_string());
 }
 
@@ -56,12 +56,22 @@ fn AllTodos (todos : &mut Vec<Todo>){
         println!("{:?}" , todo);
     }
 }
+
+fn MarkComplete(todos : &mut Vec<Todo> , id : u32){
+
+   if let Some(todo) = todos.iter_mut().find(|t| t.id == id){
+        todo.completed = true;
+        println!("Marked Completed For Todo:{}" , id);
+    }else {
+        println!("Cannot Mark Completed: {}" , id);
+    }
+}
   
 
 fn main() {
     let mut todos : Vec<Todo> = Vec :: new();   
     loop{
-        println!("Enter an operation to perform \n 1.Add  \n 2.Delete \n 3.Update \n 4.View tasks \n 5.Exit");
+        println!("Enter an operation to perform \n 1.Add  \n 2.Delete \n 3.Update \n 4.View tasks \n 5.Mark Completed \n 7.Exit");
         let mut input : String= String :: new();
         stdin().read_line(&mut input).expect("cannot read");
         let choice : u32 = input.trim().parse().expect("not parsed");
@@ -122,6 +132,13 @@ fn main() {
                AllTodos(&mut todos);
             },
             5=>{
+                println!("Enter Id of todo to be completed");
+                let mut id = String :: new();
+                stdin().read_line(&mut id ).expect("Cannot read");
+                let id = id.trim().parse().expect("cannot parse");
+                MarkComplete(&mut todos, id);
+             },
+            7=>{
                 println!("Bye Bye");
                 return;
             },
